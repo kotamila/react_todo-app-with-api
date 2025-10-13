@@ -1,14 +1,25 @@
 import React from 'react';
 import { Todo } from '../types/Todo';
-import { USER_ID } from '../todos';
 import { ErrorMessage } from '../hooks/errorMessage';
+import { updateTodoStatus } from '../todos';
 
-export const handleToggle = async (
-  id: number,
-  todos: Todo[],
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>,
-  setErrorMessage: React.Dispatch<React.SetStateAction<string>>,
-) => {
+type Params = {
+  id: number;
+  todos: Todo[];
+  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  setDeletingTodoIds: (updater: React.SetStateAction<number[]>) => void;
+};
+
+export const handleToggle = async ({
+  id,
+  todos,
+  setTodos,
+  setErrorMessage,
+  setDeletingTodoIds,
+}: Params) => {
+  setDeletingTodoIds(prev => [...prev, id]);
+
   try {
     const todoToUpdate = todos.find(todo => todo.id === id);
 
@@ -16,29 +27,17 @@ export const handleToggle = async (
       return;
     }
 
-    const response = await fetch(
-      `https://mate.academy/students-api/todos/${id}?userId=${USER_ID}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          completed: !todoToUpdate.completed,
-        }),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(ErrorMessage.UnableToUpdate);
-    }
+    const updatedTodo = await updateTodoStatus(id, !todoToUpdate.completed);
 
     setTodos(prev =>
       prev.map(todo =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+        todo.id === id ? { ...todo, completed: updatedTodo.completed } : todo,
       ),
     );
   } catch {
     setErrorMessage(ErrorMessage.UnableToUpdate);
+    setTimeout(() => setErrorMessage(''), 3000);
+  } finally {
+    setDeletingTodoIds(prev => prev.filter(todoId => todoId !== id));
   }
 };

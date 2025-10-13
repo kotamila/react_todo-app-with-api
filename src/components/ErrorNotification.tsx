@@ -7,14 +7,15 @@ interface Props {
 }
 
 export const ErrorNotification: React.FC<Props> = ({ message, onHide }) => {
-  const isVisible = Boolean(message);
+  if (!message) {
+    return null;
+  }
 
   return (
     <div
       data-cy="ErrorNotification"
-      className={classNames('notification', 'is-danger', 'is-light', {
-        hidden: !isVisible,
-      })}
+      className={classNames('notification', 'is-danger', 'is-light', {})}
+      role="alert"
     >
       <button
         data-cy="HideErrorButton"

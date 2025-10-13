@@ -112,7 +112,13 @@ export const App: React.FC = () => {
                 }
                 hasTodos={todos.length > 0}
                 onToggle={(id: number) =>
-                  handleToggle(id, todos, setTodos, setErrorMessage)
+                  handleToggle({
+                    id,
+                    todos,
+                    setTodos,
+                    setErrorMessage,
+                    setDeletingTodoIds,
+                  })
                 }
               />
 

@@ -12,7 +12,7 @@ interface Props {
 
 export const TodoItem: React.FC<Props> = ({
   todo,
-  isLoading,
+  isLoading = false,
   onDelete,
   onToggle,
   isDeleting,
@@ -21,7 +21,7 @@ export const TodoItem: React.FC<Props> = ({
     <div
       key={todo.id}
       data-cy="Todo"
-      className={`todo ${todo.completed ? 'completed' : ''}`}
+      className={`todo ${todo.completed ? 'completed' : todo.completed}`}
     >
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className="todo__status-label">
@@ -30,7 +30,8 @@ export const TodoItem: React.FC<Props> = ({
           type="checkbox"
           className="todo__status"
           checked={todo.completed}
-          onChange={() => onToggle && onToggle(todo.id)}
+          onChange={() => onToggle(todo.id)}
+          disabled={isLoading || isDeleting}
         />
       </label>
 
@@ -42,8 +43,8 @@ export const TodoItem: React.FC<Props> = ({
         data-cy="TodoDelete"
         type="button"
         className="todo__remove"
-        onClick={() => onDelete && onDelete(todo.id)}
-        disabled={isLoading}
+        onClick={() => onDelete(todo.id)}
+        disabled={isLoading || isDeleting}
       >
         ×
       </button>
