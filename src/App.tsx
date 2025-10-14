@@ -75,6 +75,10 @@ export const App: React.FC = () => {
 
           <div className="todoapp__content">
             <Header
+              todos={todos}
+              setTodos={setTodos}
+              setErrorMessage={setErrorMessage}
+              setDeletingTodoIds={setDeletingTodoIds}
               newTitle={newTitle}
               setNewTitle={setNewTitle}
               isAdding={isAdding}

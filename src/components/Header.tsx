@@ -1,4 +1,12 @@
+import classNames from 'classnames';
+import { Todo } from '../types/Todo';
+import { handleToggleAll } from '../utils/handleToggleAll';
+
 interface Props {
+  todos: Todo[];
+  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  setDeletingTodoIds: React.Dispatch<React.SetStateAction<number[]>>;
   newTitle: string;
   setNewTitle: (title: string) => void;
   isAdding: boolean;
@@ -7,6 +15,10 @@ interface Props {
 }
 
 export const Header: React.FC<Props> = ({
+  todos,
+  setTodos,
+  setErrorMessage,
+  setDeletingTodoIds,
   newTitle,
   setNewTitle,
   isAdding,
@@ -17,8 +29,18 @@ export const Header: React.FC<Props> = ({
     <header className="todoapp__header">
       <button
         type="button"
-        className="todoapp__toggle-all active"
+        className={classNames('todoapp__toggle-all', {
+          active: todos.length > 0 && todos.every(todo => todo.completed),
+        })}
         data-cy="ToggleAllButton"
+        onClick={() =>
+          handleToggleAll({
+            todos,
+            setTodos,
+            setErrorMessage,
+            setDeletingTodoIds,
+          })
+        }
       />
 
       <form onSubmit={onSubmit}>
