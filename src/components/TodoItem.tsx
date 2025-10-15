@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Todo } from '../types/Todo';
 import classNames from 'classnames';
+import { ErrorMessage } from '../hooks/errorMessage';
+import { updateTodoTitle } from '../todos';
 
 interface Props {
   todo: Todo;
@@ -8,6 +10,8 @@ interface Props {
   onToggle: (id: number) => void;
   isDeleting: boolean;
   onDelete: (id: number) => void;
+  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const TodoItem: React.FC<Props> = ({
@@ -16,12 +20,74 @@ export const TodoItem: React.FC<Props> = ({
   onDelete,
   onToggle,
   isDeleting,
+  setTodos,
+  setErrorMessage,
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(todo.title);
+  const editInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing && editInputRef.current) {
+      editInputRef.current.focus();
+    }
+  }, [isEditing]);
+
+  const handleEditStart = () => {
+    if (!isDeleting && !isLoading) {
+      setIsEditing(true);
+    }
+  };
+
+  const handleEditCancel = () => {
+    setIsEditing(false);
+    setEditedTitle(todo.title);
+  };
+
+  const handleEditSave = async () => {
+    const newTitle = editedTitle.trim();
+
+    if (newTitle === todo.title) {
+      setIsEditing(false);
+
+      return;
+    }
+
+    if (!newTitle) {
+      onDelete(todo.id);
+
+      return;
+    }
+
+    try {
+      const updated = await updateTodoTitle(todo.id, newTitle);
+
+      setTodos(prev =>
+        prev.map(t => (t.id === todo.id ? { ...t, title: updated.title } : t)),
+      );
+
+      setEditedTitle(updated.title);
+    } catch {
+      setErrorMessage(ErrorMessage.UnableToUpdate);
+      setTimeout(() => setErrorMessage(''), 3000);
+    } finally {
+      setIsEditing(false);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      handleEditSave();
+    } else if (event.key === 'Escape') {
+      handleEditCancel();
+    }
+  };
+
   return (
     <div
       key={todo.id}
       data-cy="Todo"
-      className={`todo ${todo.completed ? 'completed' : todo.completed}`}
+      className={classNames('todo', { completed: todo.completed })}
     >
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className="todo__status-label">
@@ -35,9 +101,25 @@ export const TodoItem: React.FC<Props> = ({
         />
       </label>
 
-      <span data-cy="TodoTitle" className="todo__title">
-        {todo.title}
-      </span>
+      {!isEditing ? (
+        <span
+          data-cy="TodoTitle"
+          className="todo__title"
+          onDoubleClick={handleEditStart}
+        >
+          {todo.title}
+        </span>
+      ) : (
+        <input
+          ref={editInputRef}
+          className="todo__title-field"
+          value={editedTitle}
+          onChange={event => setEditedTitle(event?.target.value)}
+          onKeyDown={handleKeyDown}
+          onBlur={handleEditSave}
+          disabled={isDeleting}
+        />
+      )}
 
       <button
         data-cy="TodoDelete"

@@ -24,10 +24,10 @@ export const handleToggleAll = async ({
     return;
   }
 
-  try {
-    setDeletingTodoIds(prev => [...prev, ...todosToUpdate.map(t => t.id)]);
+  setDeletingTodoIds(prev => [...prev, ...todosToUpdate.map(t => t.id)]);
 
-    const updatedTodos = await Promise.all(
+  try {
+    const result = await Promise.all(
       todosToUpdate.map(todo =>
         updateTodoStatus(todo.id, newStatus).catch(() => null),
       ),
@@ -35,7 +35,7 @@ export const handleToggleAll = async ({
 
     setTodos(prev =>
       prev.map(todo => {
-        const updated = updatedTodos.find(t => t && t.id === todo.id);
+        const updated = result.find(t => t && t.id === todo.id);
 
         return updated ? { ...todo, completed: updated.completed } : todo;
       }),
