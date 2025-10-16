@@ -8,6 +8,8 @@ interface Props {
   onDelete: (id: number) => void;
   hasTodos: boolean;
   onToggle: (id: number) => void | Promise<void>;
+  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const TodoList: React.FC<Props> = ({
@@ -15,6 +17,8 @@ export const TodoList: React.FC<Props> = ({
   deletingTodoIds,
   onDelete,
   onToggle,
+  setTodos,
+  setErrorMessage,
 }) => (
   <ul className="todo-list" data-cy="TodoList">
     {todos.map(todo => (
@@ -24,6 +28,8 @@ export const TodoList: React.FC<Props> = ({
         isDeleting={deletingTodoIds.includes(todo.id)}
         onDelete={onDelete}
         onToggle={onToggle}
+        setTodos={setTodos}
+        setErrorMessage={setErrorMessage}
       />
     ))}
   </ul>
