@@ -17,7 +17,7 @@ export const ErrorNotification: React.FC<Props> = ({ message, onHide }) => {
         'is-danger',
         'is-light',
         'error-notification',
-        { 'is-hidden': isHidden },
+        { hidden: isHidden },
       )}
       role="alert"
     >
