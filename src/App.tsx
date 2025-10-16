@@ -124,6 +124,8 @@ export const App: React.FC = () => {
                     setDeletingTodoIds,
                   })
                 }
+                setTodos={setTodos}
+                setErrorMessage={setErrorMessage}
               />
 
               {tempTodo && <TempTodo tempTodo={tempTodo} />}
