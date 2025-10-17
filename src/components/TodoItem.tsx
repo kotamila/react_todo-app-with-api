@@ -25,6 +25,7 @@ export const TodoItem: React.FC<Props> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(todo.title);
+  const [isUpdating, setisUpdating] = useState(false);
   const editInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -53,6 +54,8 @@ export const TodoItem: React.FC<Props> = ({
       return;
     }
 
+    setisUpdating(true);
+
     if (!newTitle) {
       onDelete(todo.id);
 
@@ -72,6 +75,7 @@ export const TodoItem: React.FC<Props> = ({
       setTimeout(() => setErrorMessage(''), 3000);
     } finally {
       setIsEditing(false);
+      setisUpdating(false);
     }
   };
 
@@ -111,6 +115,7 @@ export const TodoItem: React.FC<Props> = ({
         </span>
       ) : (
         <input
+          data-cy="TodoTitleField"
           ref={editInputRef}
           className="todo__title-field"
           value={editedTitle}
@@ -121,19 +126,23 @@ export const TodoItem: React.FC<Props> = ({
         />
       )}
 
-      <button
-        data-cy="TodoDelete"
-        type="button"
-        className="todo__remove"
-        onClick={() => onDelete(todo.id)}
-        disabled={isLoading || isDeleting}
-      >
-        ×
-      </button>
+      {!isEditing && (
+        <button
+          data-cy="TodoDelete"
+          type="button"
+          className="todo__remove"
+          onClick={() => onDelete(todo.id)}
+          disabled={isLoading || isDeleting}
+        >
+          ×
+        </button>
+      )}
 
       <div
         data-cy="TodoLoader"
-        className={classNames('modal', 'overlay', { 'is-active': isDeleting })}
+        className={classNames('modal', 'overlay', {
+          'is-active': isDeleting || isUpdating,
+        })}
       >
         <div className="modal-background has-background-white-ter" />
         <div className="loader" />
