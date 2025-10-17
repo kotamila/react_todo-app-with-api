@@ -70,11 +70,11 @@ export const TodoItem: React.FC<Props> = ({
       );
 
       setEditedTitle(updated.title);
+      setIsEditing(false);
     } catch {
       setErrorMessage(ErrorMessage.UnableToUpdate);
       setTimeout(() => setErrorMessage(''), 3000);
     } finally {
-      setIsEditing(false);
       setisUpdating(false);
     }
   };
