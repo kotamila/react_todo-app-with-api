@@ -16,11 +16,7 @@ export const handleToggleAll = async ({
   setErrorMessage,
   setDeletingTodoIds,
 }: Props) => {
-  if (todos.length === 0) {
-    return;
-  }
-
-  const areAllCompleted = todos.filter(todo => todo.completed);
+  const areAllCompleted = todos.every(todo => todo.completed);
   const newStatus = !areAllCompleted;
   const todosToUpdate = todos.filter(todo => todo.completed !== newStatus);
 
@@ -28,6 +24,7 @@ export const handleToggleAll = async ({
     return;
   }
 
+  setDeletingTodoIds(prev => [...prev, ...todosToUpdate.map(t => t.id)]);
   try {
     const result = await Promise.all(
       todosToUpdate.map(todo =>
