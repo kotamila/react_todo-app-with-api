@@ -25,23 +25,28 @@ export const Header: React.FC<Props> = ({
   onSubmit,
   inputRef,
 }) => {
+  const hasTodos = todos.length > 0;
+  const isAllCompleted = todos.every(todo => todo.completed);
+
   return (
     <header className="todoapp__header">
-      <button
-        type="button"
-        className={classNames('todoapp__toggle-all', {
-          active: todos.length > 0 && todos.every(todo => todo.completed),
-        })}
-        data-cy="ToggleAllButton"
-        onClick={() =>
-          handleToggleAll({
-            todos,
-            setTodos,
-            setErrorMessage,
-            setDeletingTodoIds,
-          })
-        }
-      />
+      {hasTodos && (
+        <button
+          type="button"
+          className={classNames('todoapp__toggle-all', {
+            active: isAllCompleted,
+          })}
+          data-cy="ToggleAllButton"
+          onClick={() =>
+            handleToggleAll({
+              todos,
+              setTodos,
+              setErrorMessage,
+              setDeletingTodoIds,
+            })
+          }
+        />
+      )}
 
       <form onSubmit={onSubmit}>
         <input
