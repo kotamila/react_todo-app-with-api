@@ -19,7 +19,7 @@ import { ErrorNotification } from './components/ErrorNotification';
 
 import { useTodoState } from './hooks/useTodoState';
 import { FilterType } from './types/Filter';
-import { ErrorMessage } from './hooks/errorMessage';
+import { ErrorMessage } from './utils/errorMessage';
 
 import classNames from 'classnames';
 

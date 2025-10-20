@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Todo } from '../types/Todo';
 import classNames from 'classnames';
-import { ErrorMessage } from '../hooks/errorMessage';
+import { ErrorMessage } from '../utils/errorMessage';
 import { updateTodoTitle } from '../todos';
 
 interface Props {

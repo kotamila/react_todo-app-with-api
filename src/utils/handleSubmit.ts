@@ -1,7 +1,7 @@
 import React from 'react';
 import { addTodo, USER_ID } from '../todos';
 import { Todo } from '../types/Todo';
-import { ErrorMessage } from '../hooks/errorMessage';
+import { ErrorMessage } from './errorMessage';
 
 interface HandleSubmitArgs {
   event: React.FormEvent;

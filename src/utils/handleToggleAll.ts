@@ -1,5 +1,5 @@
 import { updateTodoStatus } from '../todos';
-import { ErrorMessage } from '../hooks/errorMessage';
+import { ErrorMessage } from './errorMessage';
 import { Todo } from '../types/Todo';
 import React from 'react';
 

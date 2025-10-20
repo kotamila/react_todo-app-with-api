@@ -1,7 +1,7 @@
 import React from 'react';
 import { deleteTodo } from '../todos';
 import { Todo } from '../types/Todo';
-import { ErrorMessage } from '../hooks/errorMessage';
+import { ErrorMessage } from './errorMessage';
 
 export const handleClearCompleted = (
   todos: Todo[],

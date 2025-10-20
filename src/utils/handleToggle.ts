@@ -1,6 +1,6 @@
 import React from 'react';
 import { Todo } from '../types/Todo';
-import { ErrorMessage } from '../hooks/errorMessage';
+import { ErrorMessage } from './errorMessage';
 import { updateTodoStatus } from '../todos';
 
 type Params = {
